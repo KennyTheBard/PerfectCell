@@ -23,13 +23,14 @@ func _process(delta):
 	if not self.paused:
 		update()
 
-func apply_rule(tile_pos):
+func game_of_life(tile_pos):
 	var neighs = []
 	for i in range(-1, 2):
 		for j in range(-1, 2):
-			if i != 0 and j != 0:
+			if i != 0 or j != 0:
 				neighs.push_back(Vector2(tile_pos.x + i, tile_pos.y + j))
 	var live = 0
+	print(len(neighs))
 	for pos in neighs:
 		var aux = get_cellv(pos)
 		if aux == 1:
@@ -51,7 +52,7 @@ func apply_rule(tile_pos):
 func update():
 	var cells = []
 	for tile in get_used_cells():
-		var value = apply_rule(tile)
+		var value = game_of_life(tile)
 		cells.push_back([tile, value])
 	for cell in cells:
 		set_cellv(cell[0], cell[1])
