@@ -24,25 +24,22 @@ func _process(delta):
 	if not self.paused:
 		update()
 
-func rule126(tile_pos):
-	var neighs = []
-	for i in range(-1, 2):
-		neighs.push_back(Vector2(tile_pos.x + i, tile_pos.y - 1))
-	
-	var live = 0
-	for pos in neighs:
-		var aux = get_cellv(pos)
-		if aux == 1:
-			live += 1
-	
+func wolfram_automata(tile_pos, rule):
 	var tile = get_cellv(tile_pos)
-	if tile == 0: 
-		if live == 0 or live == 3:
-			return 0
-		else:
-			return 1
-	else:
+	if tile == 1:
 		return tile
+	
+	var prev_value = 0
+	for i in range(-1, 2):
+		var cell = get_cellv(Vector2(tile_pos.x + i, tile_pos.y - 1))
+		prev_value = prev_value << 1
+		if cell == 1:
+			prev_value |= 1
+	
+	if (rule & (1 << prev_value)) != 0:
+		return 1
+	else:
+		return 0
 
 func game_of_life(tile_pos):
 	var neighs = []
@@ -73,7 +70,7 @@ func game_of_life(tile_pos):
 func update():
 	var cells = []
 	for tile in get_used_cells():
-		var value = rule126(tile)
+		var value = wolfram_automata(tile, 28)
 		cells.push_back([tile, value])
 	for cell in cells:
 		set_cellv(cell[0], cell[1])
