@@ -35,12 +35,13 @@ func _process(delta):
 	if not self.paused:
 		_update_cells()
 
-
+# mark a cell to be updated
 func _add_cell(tile_pos):
 	if not self.cell_buf[self.aux_buf].has(tile_pos):
 			self.cell_buf[self.aux_buf].append(tile_pos)
 
 
+# swap the main and auxiliar cell buffers
 func _commit_cells():
 	var swap_var
 	swap_var = self.aux_buf
@@ -49,6 +50,8 @@ func _commit_cells():
 	self.cell_buf[self.aux_buf].clear()
 
 
+# Wolfram Automata set of functions
+# =================================================================
 func wolfram_automata_next(tile_pos):
 	var cells = []
 	for i in range(-1, 2):
@@ -56,14 +59,12 @@ func wolfram_automata_next(tile_pos):
 		_add_cell(tile)
 		cells.append(tile)
 
-
 func wolfram_automata_prev(tile_pos):
 	var cells = []
 	for i in range(-1, 2):
 		var tile = Vector2(tile_pos.x + i, tile_pos.y - 1)
 		cells.append(tile)
 	return cells
-
 
 func wolfram_automata(tile_pos, rule):
 	var tile = get_cellv(tile_pos)
@@ -83,6 +84,8 @@ func wolfram_automata(tile_pos, rule):
 		return 1
 	else:
 		return 0
+# =================================================================
+
 
 
 func game_of_life(tile_pos):
